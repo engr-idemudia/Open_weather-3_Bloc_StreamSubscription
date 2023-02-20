@@ -7,7 +7,6 @@ import 'repositories/weather_repository.dart';
 import 'services/weather_api_services.dart';
 
 import 'pages/home_page.dart';
-
 import 'blocs/blocs.dart';
 
 void main() async {

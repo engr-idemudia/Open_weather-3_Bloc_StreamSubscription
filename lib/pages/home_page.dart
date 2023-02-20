@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_weather_cubit/constants/constants.dart';
-import 'package:open_weather_cubit/cubits/weather/weather_cubit.dart';
-import 'package:open_weather_cubit/pages/search_page.dart';
-import 'package:open_weather_cubit/pages/settins_page.dart';
-import 'package:open_weather_cubit/widgets/error_dialog.dart';
+import '../constants/constants.dart';
+import 'search_page.dart';
+import 'settins_page.dart';
+import '../widgets/error_dialog.dart';
 import 'package:recase/recase.dart';
 
-import '../cubits/temp_settings/temp_settings_cubit.dart';
+import '../blocs/blocs.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   //   //           weatherApiServices: WeatherApiServices(httpClient: http.Client()))
   //   //       .fetchWeather('london');
 
-  //   ////context.read<WeatherCubit>().fetchWeather('london');
+  //   ////context.read<WeatherBloc>().fetchWeather('london');
   // }
 
   @override
@@ -49,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             );
             print('city: $_city');
             if (_city != null) {
-              context.read<WeatherCubit>().fetchWeather(_city!);
+              context.read<WeatherBloc>().add(FetchWeatherEvent(city: _city!));
             }
           },
         ),
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   String showTemperature(double temperature) {
-    final tempUnit = context.watch<TempSettingsCubit>().state.tempUnit;
+    final tempUnit = context.watch<TempSettingsBloc>().state.tempUnit;
 
     if (tempUnit == TempUnit.fahrenheit) {
       return ((temperature * 9 / 5) + 32).toStringAsFixed(2) + '℉';
@@ -100,7 +99,7 @@ class _HomePageState extends State<HomePage> {
 
 //use BlocConsumer to integrate both Blocbuilder and BlocListener
   Widget _showWeather() {
-    return BlocConsumer<WeatherCubit, WeatherState>(
+    return BlocConsumer<WeatherBloc, WeatherState>(
       //builder for state
       builder: (context, state) {
         if (state.status == WeatherStatus.initial) {
